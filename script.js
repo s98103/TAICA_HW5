@@ -44,7 +44,7 @@ let cur=null;
 
 /* ===== 篩選選單 ===== */
 const months=[...new Set(F.map(f=>f[1]))].sort((a,b)=>a-b);
-const regions=[...new Set(F.map(f=>f[2]))];
+const regions=["北","中","南","離島"].filter(r=>F.some(f=>f[2]===r));
 $("fm").innerHTML='<option value="">全部</option>'+months.map(m=>`<option value="${m}">${m}月</option>`).join("");
 $("fr").innerHTML='<option value="">全部</option>'+regions.map(r=>`<option>${r}</option>`).join("");
 $("fm").onchange=$("fr").onchange=render;
