@@ -97,8 +97,7 @@ function pick(){
   const shops=[...m.slice(0,4),...sh([...m.slice(4),...o])].slice(0,6);
   $("ot").textContent=`${f[0]} 附近吃這些`;
   $("picks").innerHTML=shops.map(s=>`<li class="${s[5]?"mine":""}"><b>${s[5]?"⭐":"🍽️"} ${s[0]}</b><em>${s[1]}</em>${s[6]?`<span class="star">Google ★${s[6]}</span>`:""}<br>${s[2]}${typeof s[5]==="string"?`<br><i>我推：${s[5]}</i>`:""}
-    <a target="_blank" rel="noopener" href="${s[3]!=null?`https://www.google.com/maps/search/${encodeURIComponent(s[0])}/@${s[3]},${s[4]},18z`:`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s[0]+" "+(s[7]||""))}`}">Google 地圖</a>
-    /* <a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s[0]+" "+(s[7]||""))}">Google 地圖</a></li>`).join(""); */
+  <a target="_blank" rel="noopener" href="${s[3]!=null?`https://www.google.com/maps/search/${encodeURIComponent(s[0])}/@${s[3]},${s[4]},18z`:`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s[0]+" "+(s[7]||""))}`}">Google 地圖</a>
   const pts=shops.filter(s=>s[3]!=null);
   pts.forEach(s=>L.marker([s[3],s[4]],{icon:icon(s[5]?"⭐":"🍽️","food")}).bindPopup(`<b>${s[0]}</b><br>${s[2]}`).addTo(sl));
   map.fitBounds(L.latLngBounds([[f[4],f[5]],...pts.map(s=>[s[3],s[4]])]).pad(.25),{maxZoom:14});
