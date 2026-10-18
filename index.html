@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>音樂祭吃喝地圖</title>
+<!-- 地圖套件 Leaflet（需要網路） -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>✦ 音樂祭吃喝地圖 ✦</h1>
+    <p>挑一個音樂祭，看看附近可以吃什麼</p>
+  </header>
+
+  <section class="win">
+    <div class="bar"><i></i><i></i><i></i><span>篩選</span></div>
+    <div class="body filters">
+      <label>月份<select id="fm"></select></label>
+      <label>地區<select id="fr"></select></label>
+    </div>
+  </section>
+
+  <section class="win">
+    <div class="bar"><i></i><i></i><i></i><span>音樂祭清單</span></div>
+    <div class="body"><ul id="list"></ul></div>
+  </section>
+
+  <section class="win">
+    <div class="bar"><i></i><i></i><i></i><span>地圖</span></div>
+    <div class="body">
+      <div id="map" role="application" aria-label="音樂祭與美食地圖"></div>
+      <p class="note">🎵 音樂祭　🍜 推薦美食（位置為約略，出發前請用 Google 地圖確認）</p>
+    </div>
+  </section>
+
+  <section class="win" id="out" hidden>
+    <div class="bar"><i></i><i></i><i></i><span>美食清單</span></div>
+    <div class="body">
+      <h2 id="ot"></h2>
+      <ul id="picks"></ul>
+      <button class="btn" id="re">🎲 換一批</button>
+    </div>
+  </section>
+
+  <footer>月份為歷年大致舉辦時間，請以各音樂祭官方公告為準。</footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
