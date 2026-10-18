@@ -95,11 +95,13 @@ function pick(){
   const all=S[f[6]],m=sh(all.filter(s=>s[5])),o=sh(all.filter(s=>!s[5]));
   const shops=[...m.slice(0,4),...sh([...m.slice(4),...o])].slice(0,6);
   $("ot").textContent=`${f[0]} 附近吃這些`;
-  $("picks").innerHTML=shops.map(s=>`<li class="${s[5]?"mine":""}"><b>${s[5]?"⭐":"🍜"} ${s[0]}</b><em>${s[1]}</em>${s[6]?`<span class="star">Google ★${s[6]}</span>`:""}<br>${s[2]}${typeof s[5]==="string"?`<br><i>我推：${s[5]}</i>`:""}
+  $("picks").innerHTML=shops.map(s=>`<li class="${s[5]?"mine":""}"><b>${s[5]?"⭐":"🍽️"} ${s[0]}</b><em>${s[1]}</em>${s[6]?`<span class="star">Google ★${s[6]}</span>`:""}<br>${s[2]}${typeof s[5]==="string"?`<br><i>我推：${s[5]}</i>`:""}
     <a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s[0]+" "+(s[7]||""))}">Google 地圖</a></li>`).join("");
   const pts=shops.filter(s=>s[3]!=null);
-  pts.forEach(s=>L.marker([s[3],s[4]],{icon:icon(s[5]?"⭐":"🍜","food")}).bindPopup(`<b>${s[0]}</b><br>${s[2]}`).addTo(sl));
+  pts.forEach(s=>L.marker([s[3],s[4]],{icon:icon(s[5]?"⭐":"🍽️","food")}).bindPopup(`<b>${s[0]}</b><br>${s[2]}`).addTo(sl));
   map.fitBounds(L.latLngBounds([[f[4],f[5]],...pts.map(s=>[s[3],s[4]])]).pad(.25),{maxZoom:14});
 }
 $("re").onclick=pick;
 render();
+.btn.alt{background:#fff;color:var(--ink);text-shadow:none;border:2px solid var(--lilac);box-shadow:none;margin-left:6px}
+.btn:disabled{opacity:.5;cursor:default}
