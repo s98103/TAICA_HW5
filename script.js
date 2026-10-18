@@ -63,16 +63,18 @@ function render(){
 $("list").onclick=e=>{const b=e.target.closest("button");if(b)choose(+b.dataset.i)};
 
 /* ===== 選擇音樂祭並產生美食清單 ===== */
-function choose(i){cur=i;render();pick();if(F[i][4])$("map").scrollIntoView({behavior:"smooth",block:"center"})}
+function choose(i){cur=i;render();pick();if(F[i][4]&&innerWidth<900)$("map").scrollIntoView({behavior:"smooth",block:"center"})}
 function pick(){
   const f=F[cur];sl.clearLayers();$("out").hidden=false;
   if(!f[6]){$("ot").textContent=f[0];$("picks").innerHTML='<li class="empty">地點尚未公布，公布後再來看看</li>';$("re").hidden=true;return}
   $("re").hidden=false;
-  const shops=[...S[f[6]]].sort(()=>Math.random()-.5).slice(0,4);
+  const all=S[f[6]],mine=all.filter(s=>s[5]);
+  const rest=all.filter(s=>!s[5]).sort(()=>Math.random()-.5);
+  const shops=[...mine,...rest].slice(0,4);
   $("ot").textContent=`${f[0]} 附近吃這些`;
-  $("picks").innerHTML=shops.map(s=>`<li><b>🍜 ${s[0]}</b><em>${s[1]}</em><br>${s[2]}
+  $("picks").innerHTML=shops.map(s=>`<li class="${s[5]?"mine":""}"><b>${s[5]?"⭐":"🍜"} ${s[0]}</b><em>${s[1]}</em><br>${s[2]}${s[5]?`<br><i>我推：${s[5]}</i>`:""}
     <a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s[0])}">Google 地圖</a></li>`).join("");
-  shops.forEach(s=>L.marker([s[3],s[4]],{icon:icon("🍜","food")}).bindPopup(`<b>${s[0]}</b><br>${s[2]}`).addTo(sl));
+  shops.forEach(s=>L.marker([s[3],s[4]],{icon:icon(s[5]?"⭐":"🍜","food")}).bindPopup(`<b>${s[0]}</b><br>${s[2]}`).addTo(sl));
   map.fitBounds(L.latLngBounds([[f[4],f[5]],...shops.map(s=>[s[3],s[4]])]).pad(.25));
 }
 $("re").onclick=pick;
