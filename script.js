@@ -93,6 +93,7 @@ function pick(){
   if(!f[6]){$("ot").textContent=f[0];$("picks").innerHTML='<li class="empty">地點尚未公布，公布後再來看看</li>';$("re").hidden=true;return}
   $("re").hidden=false;
   const all=S[f[6]],m=sh(all.filter(s=>s[5])),o=sh(all.filter(s=>!s[5]));
+  updRe(all.length);
   const shops=[...m.slice(0,4),...sh([...m.slice(4),...o])].slice(0,6);
   $("ot").textContent=`${f[0]} 附近吃這些`;
   $("picks").innerHTML=shops.map(s=>`<li class="${s[5]?"mine":""}"><b>${s[5]?"⭐":"🍽️"} ${s[0]}</b><em>${s[1]}</em>${s[6]?`<span class="star">Google ★${s[6]}</span>`:""}<br>${s[2]}${typeof s[5]==="string"?`<br><i>我推：${s[5]}</i>`:""}
@@ -102,6 +103,27 @@ function pick(){
   map.fitBounds(L.latLngBounds([[f[4],f[5]],...pts.map(s=>[s[3],s[4]])]).pad(.25),{maxZoom:14});
 }
 $("re").onclick=pick;
+/* 換一批：店家不超過 6 家就沒有可換的 */
+function updRe(n){$("re").disabled=n<=6;$("re").textContent=n<=6?"已顯示全部":"🎲 換一批"}
+
+/* 探索附近：用 OpenStreetMap 找場地 1.5 公里內的店家 */
+async function nearby(){
+  const f=F[cur];if(!f||f[4]==null)return;
+  $("nbnote").textContent="搜尋中…";
+  const q=`[out:json][timeout:20];node(around:1500,${f[4]},${f[5]})["name"]["amenity"~"restaurant|cafe|fast_food|food_court|ice_cream"];out 40;`;
+  try{
+    const r=await fetch("https://overpass-api.de/api/interpreter",{method:"POST",body:"data="+encodeURIComponent(q)});
+    const d=await r.json();
+    const shops=sh(d.elements).slice(0,6);
+    if(!shops.length){$("nbnote").textContent="這附近在 OpenStreetMap 沒有找到店家";return}
+    sl.clearLayers();
+    $("ot").textContent=`${f[0]} 附近的店家`;
+    $("picks").innerHTML=shops.map(e=>`<li><b>🍴 ${e.tags.name}</b>${e.tags.cuisine?`<em>${e.tags.cuisine}</em>`:""}<br>
+      <a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${e.lat},${e.lon}">Google 地圖</a></li>`).join("");
+    shops.forEach(e=>L.marker([e.lat,e.lon],{icon:icon("🍴","food")}).bindPopup(`<b>${e.tags.name}</b>`).addTo(sl));
+    map.fitBounds(L.latLngBounds([[f[4],f[5]],...shops.map(e=>[e.lat,e.lon])]).pad(.25),{maxZoom:16});
+    $("nbnote").textContent="資料來自 OpenStreetMap，沒有星等與人氣排序，出發前請用 Google 地圖確認。再點一次音樂祭可回到推薦清單。";
+  }catch(err){$("nbnote").textContent="搜尋失敗，請稍後再試"}
+}
+$("nb").onclick=nearby;
 render();
-.btn.alt{background:#fff;color:var(--ink);text-shadow:none;border:2px solid var(--lilac);box-shadow:none;margin-left:6px}
-.btn:disabled{opacity:.5;cursor:default}
