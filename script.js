@@ -83,6 +83,7 @@ function render(){
     .bindPopup(`<b>${f[0]}</b><br>${f[1]}月・${f[3]}`).on("click",()=>choose(i)).addTo(fl)});
 }
 banner();
+$("list").onclick=e=>{const b=e.target.closest("button");if(b)choose(+b.dataset.i)};
 
 /* ===== 選擇音樂祭並產生美食清單 ===== */
 function choose(i){cur=i;render();pick();if(F[i][4]&&innerWidth<900)$("map").scrollIntoView({behavior:"smooth",block:"center"})}
