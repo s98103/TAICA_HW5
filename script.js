@@ -50,17 +50,26 @@ $("fr").innerHTML='<option value="">全部</option>'+regions.map(r=>`<option>${r
 $("fm").onchange=$("fr").onchange=render;
 
 /* ===== 顯示清單與音樂祭圖釘 ===== */
+const nowM=new Date().getMonth()+1;
+function banner(){
+  const names=a=>a.map(f=>f[0]).join("、");
+  const thisM=F.filter(f=>f[1]===nowM);
+  const nx=F.filter(f=>f[1]>nowM)[0]||F[0]; // 沒有更晚的，就接明年最早的
+  const nm=F.filter(f=>f[1]===nx[1]);
+  $("next").innerHTML=(thisM.length?`<p>🔥 本月（${nowM}月）：${names(thisM)}</p>`:`<p>本月（${nowM}月）沒有音樂祭</p>`)
+    +`<p>⏭ 下一波：${nx[1]}月 ${names(nm)}</p>`;
+}
 function render(){
   const m=$("fm").value,r=$("fr").value;
   const items=F.map((f,i)=>({f,i})).filter(({f})=>(!m||f[1]==m)&&(!r||f[2]==r));
   $("list").innerHTML=items.length?items.map(({f,i})=>
-    `<li><button class="fest${i===cur?" on":""}" data-i="${i}"><b>${f[1]}月</b><span>${f[0]}<small>${f[2]}・${f[3]}</small></span></button></li>`).join("")
+    `<li><button class="fest${i===cur?" on":""}${f[1]===nowM?" now":""}" data-i="${i}"><b>${f[1]===nowM?"本月":f[1]+"月"}</b><span>${f[0]}<small>${f[2]}・${f[3]}</small></span></button></li>`).join("")
     :'<li class="empty">這個條件沒有音樂祭，換個月份或地區試試</li>';
   fl.clearLayers();
   items.forEach(({f,i})=>{if(f[4])L.marker([f[4],f[5]],{icon:icon("🎵",i===cur?"sel":"")})
     .bindPopup(`<b>${f[0]}</b><br>${f[1]}月・${f[3]}`).on("click",()=>choose(i)).addTo(fl)});
 }
-$("list").onclick=e=>{const b=e.target.closest("button");if(b)choose(+b.dataset.i)};
+banner();
 
 /* ===== 選擇音樂祭並產生美食清單 ===== */
 function choose(i){cur=i;render();pick();if(F[i][4]&&innerWidth<900)$("map").scrollIntoView({behavior:"smooth",block:"center"})}
